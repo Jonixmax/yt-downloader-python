@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      width: 320px;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f0f0f;
+      color: #eee;
+      padding: 16px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .logo span {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #ff4d4d;
+    }
+    .logo small { color: #555; font-size: 0.7rem; }
+
+    #url-box {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 8px 10px;
+      font-size: 0.75rem;
+      color: #aaa;
+      word-break: break-all;
+      margin-bottom: 12px;
+      min-height: 36px;
+    }
+    #title-box {
+      font-size: 0.8rem;
+      color: #888;
+      margin-bottom: 12px;
+      font-style: italic;
+      min-height: 18px;
+    }
+
+    .format-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .fmt-btn {
+      flex: 1;
+      padding: 7px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #888;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .fmt-btn.active {
+      background: #ff4d4d22;
+      border-color: #ff4d4d;
+      color: #ff4d4d;
+    }
+
+    #btn-download {
+      width: 100%;
+      padding: 10px;
+      background: #ff4d4d;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #btn-download:hover { background: #cc3333; }
+    #btn-download:disabled { background: #333; color: #666; cursor: not-allowed; }
+
+    #status {
+      margin-top: 10px;
+      font-size: 0.78rem;
+      text-align: center;
+      min-height: 20px;
+      color: #aaa;
+    }
+    #status.ok  { color: #4afa72; }
+    #status.err { color: #ff4d4d; }
+
+    .progress {
+      display: none;
+      margin-top: 10px;
+      height: 4px;
+      background: #222;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #ff4d4d;
+      border-radius: 2px;
+      animation: load 2s infinite;
+    }
+    @keyframes load {
+      0%  { width: 0%; }
+      50% { width: 70%; }
+      100%{ width: 95%; }
+    }
+
+    #download-link {
+      display: none;
+      margin-top: 10px;
+      width: 100%;
+      padding: 8px;
+      background: #4afa7222;
+      border: 1px solid #4afa72;
+      border-radius: 6px;
+      color: #4afa72;
+      text-align: center;
+      font-size: 0.8rem;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="logo">
+  <span>▶ YT Downloader</span>
+  <small>by cubo plus</small>
+</div>
+
+<div id="url-box">Cargando URL...</div>
+<div id="title-box"></div>
+
+<div class="format-row">
+  <button class="fmt-btn active" id="fmt-mp4">🎬 MP4 (Video)</button>
+  <button class="fmt-btn" id="fmt-mp3">🎵 MP3 (Audio)</button>
+</div>
+
+<button id="btn-download">⬇ Descargar</button>
+
+<div class="progress" id="progress"><div class="progress-bar"></div></div>
+<div id="status"></div>
+<a id="download-link" target="_blank">📂 Abrir archivo descargado</a>
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "YT Downloader — cubo plus",
+  "version": "1.0",
+  "description": "Descarga videos de YouTube con un click",
+  "permissions": ["activeTab", "scripting", "downloads"],
+  "host_permissions": ["http://localhost:8090/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  }
+}
