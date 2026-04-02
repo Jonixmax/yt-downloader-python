@@ -12,6 +12,9 @@ function setFormat(fmt) {
   selectedFormat = fmt;
   document.getElementById('fmt-mp4').className = 'fmt-btn' + (fmt === 'mp4' ? ' active' : '');
   document.getElementById('fmt-mp3').className = 'fmt-btn' + (fmt === 'mp3' ? ' active' : '');
+  
+  // Ocultar menú de calidad si es MP3
+  document.getElementById('quality-select').style.display = (fmt === 'mp3') ? 'none' : 'block';
 }
 
 function setStatus(msg, type = '') {
@@ -62,43 +65,29 @@ async function startDownload() {
   const link = document.getElementById('download-link');
 
   btn.disabled = true;
-  btn.textContent = "Procesando Descarga...";
+  btn.textContent = "Procesando en segundo plano...";
   progress.style.display = 'block';
   link.style.display = 'none';
-  setStatus("Obteniendo la mejor calidad...");
+  
+  // Nuevo mensaje para el usuario
+  setStatus("Puedes cerrar esta pestaña o cambiar de página, la descarga continuará sola.", 'ok');
 
-  try {
-    const res = await fetch(`${API}/download`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: currentUrl, format: selectedFormat })
-    });
-
-    const data = await res.json();
+  // Enviar la orden al background.js
+  chrome.runtime.sendMessage({
+    action: "downloadVideo",
+    url: currentUrl,
+    format: selectedFormat,
+    quality: document.getElementById('quality-select').value // <--- NUEVA LÍNEA
+  }, (response) => {
+    // Cuando el servidor termina muy rápido o hay un error inmediato:
     progress.style.display = 'none';
-
-    if (data.success) {
+    if (response && response.success) {
       setStatus(`✅ Descarga Lista`, 'ok');
-      link.href = data.downloadUrl;
-      link.textContent = `📂 Guardar: ${data.filename}`;
-      link.style.display = 'block';
-      
-      // Intentar forzar la descarga automáticamente
-      chrome.downloads.download({
-        url: data.downloadUrl,
-        filename: data.filename
-      });
-      
       btn.textContent = "⬇ Descargar otro";
     } else {
-      setStatus(data.message, 'err');
+      setStatus(response ? response.message : "❌ Error desconocido", 'err');
       btn.textContent = "⬇ Intentar de nuevo";
     }
-  } catch (e) {
-    progress.style.display = 'none';
-    setStatus("❌ No se pudo conectar con el servidor", 'err');
-    btn.textContent = "⬇ Descargar";
-  }
-
-  btn.disabled = false;
+    btn.disabled = false;
+  });
 }

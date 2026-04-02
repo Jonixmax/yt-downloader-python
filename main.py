@@ -25,15 +25,15 @@ app.add_middleware(
 class DownloadRequest(BaseModel):
     url: str
     format: str = "mp4"
+    quality: str = "best"
 
 # --- LÓGICA UNIVERSAL DE YT-DLP ---
-def get_ydl_opts(format_type: str):
+def get_ydl_opts(format_type: str, quality: str = "best"):
     opts = {
         'outtmpl': f'{DOWNLOAD_DIR}/%(title)s.%(ext)s',
         'restrictfilenames': True,
         'noplaylist': True,
         'quiet': True,
-        # Estas opciones ayudan a saltar algunas restricciones de sitios como Instagram
         'extractor_args': {'instagram': ['api']} 
     }
     if format_type == 'mp3':
@@ -43,13 +43,18 @@ def get_ydl_opts(format_type: str):
             'preferredcodec': 'mp3',
         }]
     else:
-        # Descarga siempre en la máxima calidad disponible (sea TikTok, FB, IG, etc.)
-        opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+        if quality == "best":
+            # Máxima calidad sin límites
+            opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
+        else:
+            # Filtramos para que la altura (height) no sea mayor a la elegida (1080, 720, etc.)
+            opts['format'] = f'bestvideo[ext=mp4,height<={quality}]+bestaudio[ext=m4a]/best[ext=mp4,height<={quality}]/best'
+            
         opts['merge_output_format'] = 'mp4'
     return opts
 
-def download_video_sync(url: str, format_type: str):
-    opts = get_ydl_opts(format_type)
+def download_video_sync(url: str, format_type: str, quality: str):
+    opts = get_ydl_opts(format_type, quality)
     with yt_dlp.YoutubeDL(opts) as ydl:
         info = ydl.extract_info(url, download=True)
         filename = ydl.prepare_filename(info)
@@ -79,8 +84,8 @@ def get_info(url: str):
 @app.post("/api/download")
 def download(req: DownloadRequest):
     try:
-        print(f"📥 Solicitud de descarga de: {req.url}")
-        filename = download_video_sync(req.url, req.format)
+        print(f"📥 Solicitud de descarga: {req.url} (Calidad: {req.quality})")
+        filename = download_video_sync(req.url, req.format, req.quality)
         dl_url = f"http://localhost:{PORT}/api/file/{filename}"
         return {"success": True, "message": "✅ Descarga completada", "filename": filename, "downloadUrl": dl_url}
     except Exception as e:

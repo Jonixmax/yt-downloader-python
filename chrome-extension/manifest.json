@@ -5,6 +5,9 @@
   "description": "Descarga videos de YouTube con un click",
   "permissions": ["activeTab", "scripting", "downloads"],
   "host_permissions": ["http://localhost:8090/*"],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
