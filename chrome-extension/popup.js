@@ -12,7 +12,7 @@ function setFormat(fmt) {
   selectedFormat = fmt;
   document.getElementById('fmt-mp4').className = 'fmt-btn' + (fmt === 'mp4' ? ' active' : '');
   document.getElementById('fmt-mp3').className = 'fmt-btn' + (fmt === 'mp3' ? ' active' : '');
-  
+
   // Ocultar menú de calidad si es MP3
   document.getElementById('quality-select').style.display = (fmt === 'mp3') ? 'none' : 'block';
 }
@@ -30,11 +30,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
   currentUrl = url;
 
   const urlBox = document.getElementById('url-box');
-  
+
   // Lista de sitios soportados comunes (para dar retroalimentación visual)
-  const isSupported = url.includes("youtube") || url.includes("youtu.be") || 
-                      url.includes("instagram.com/reel") || url.includes("facebook.com") || 
-                      url.includes("tiktok.com") || url.includes("twitter.com") || url.includes("x.com");
+  const isSupported = url.includes("youtube") || url.includes("youtu.be") ||
+    url.includes("instagram.com") || url.includes("facebook.com") ||
+    url.includes("tiktok.com") || url.includes("twitter.com") || url.includes("x.com") || url.includes("threads.net");
 
   if (isSupported || url.startsWith("http")) {
     urlBox.textContent = url;
@@ -68,7 +68,7 @@ async function startDownload() {
   btn.textContent = "Procesando en segundo plano...";
   progress.style.display = 'block';
   link.style.display = 'none';
-  
+
   // Nuevo mensaje para el usuario
   setStatus("Puedes cerrar esta pestaña o cambiar de página, la descarga continuará sola.", 'ok');
 

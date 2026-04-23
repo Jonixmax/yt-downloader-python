@@ -34,7 +34,9 @@ def get_ydl_opts(format_type: str, quality: str = "best"):
         'restrictfilenames': True,
         'noplaylist': True,
         'quiet': True,
-        'extractor_args': {'instagram': ['api']} 
+        'extractor_args': {'instagram': ['api'],
+            'youtube': ['player_client=android,ios,web'] 
+        } 
     }
     if format_type == 'mp3':
         opts['format'] = 'bestaudio/best'
