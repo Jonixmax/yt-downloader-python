@@ -5,7 +5,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "downloadVideo") {
     
     // Iniciar la descarga en segundo plano
-    startDownloadInBackground(request.url, request.format)
+    startDownloadInBackground(request.url, request.format, request.quality)
       .then(response => sendResponse(response))
       .catch(error => sendResponse({ success: false, message: error.message }));
       
